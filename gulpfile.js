@@ -8,6 +8,8 @@ var reactify = require('reactify'); // transform for jsx used by browserify
 var source = require('vinyl-source-stream'); // transforms browserify output into gulp-pipeable format
 var concat = require('gulp-concat'); // combine js files
 var lint = require('gulp-eslint'); // linter for js
+var watch = require('gulp-watch');
+
 
 var config = {
 	port: 9005,
@@ -18,8 +20,8 @@ var config = {
 		images: './src/images/*',
 		css: [
 			'node_modules/bootstrap/dist/css/bootstrap.min.css',
-			'node_modules,bootstrap/dist/css/bootstrap-theme.min.css',
-			'node_modules/toastr/toastr.css'
+			'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
+			'node_modules/toastr/package/toastr.css'
 		],
 		dist: './dist',
 		mainJs: './src/main.js'
@@ -83,10 +85,14 @@ gulp.task('lint', function() {
 
 //Watch for changes to source files and run applicable gulp tasks when they change
 gulp.task('watch', function() {
-	gulp.watch(config.paths.html, ['html']);
-	gulp.watch(config.paths.images, ['images']);
-	gulp.watch(config.paths.js, ['js','lint']);
-	gulp.watch(config.paths.css, ['css'])
+	//watch(config.paths.html, ['html']);
+	//watch(config.paths.images, ['images']);
+	watch(config.paths.js, function() {
+		gulp.start('js');
+		gulp.start('lint');
+	});
+
+	//watch(config.paths.css, ['css'])
 });
 
 //Default task. Builds to dist, starts a server, and opens a browser isntance
